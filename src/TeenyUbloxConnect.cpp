@@ -212,7 +212,7 @@ bool TeenyUbloxConnect::pollNAVPVT(uint16_t maxWait_) {
   if(sendCommandPacket(true, false, maxWait_)) {
     if(ubloxNAVPVTPacketBuffer.validPacket) {
       // Lost rx packet
-      lostNAVPVTPacketCount++;
+      lostNAVPVTPacketCount += (lostNAVPVTPacketCount < 99) ? 1 : 0;
       processNAVPVTPacket(); // processing clears validPacket
       return false;
     }
@@ -232,7 +232,7 @@ bool TeenyUbloxConnect::pollNAVSAT(uint16_t maxWait_) {
   if(sendCommandPacket(true, false, maxWait_)) {
     if(ubloxNAVSATPacketBuffer.validPacket) {
       // Lost rx packet
-      lostNAVSATPacketCount++;
+      lostNAVSATPacketCount += (lostNAVSATPacketCount < 99) ? 1 : 0;
       processNAVSATPacket(); // processing clears validPacket
       return false;
     }
@@ -418,7 +418,7 @@ void TeenyUbloxConnect::processIncomingPacket(uint8_t requestedClass_, uint8_t r
   if(incomingPacket.validPacket) {
     if(receivedPacket.validPacket) {
       // Lost rx packet
-      lostRxPacketCount++;
+      lostRxPacketCount += (lostRxPacketCount < 99) ? 1 : 0;
     } else {
       receivedPacket = incomingPacket;
     }
@@ -483,6 +483,21 @@ void TeenyUbloxConnect::processIncomingPacket(uint8_t requestedClass_, uint8_t r
 
     }
   }
+}
+
+/********************************************************************/
+uint8_t TeenyUbloxConnect::getLostRxPacketCount() {
+  return lostRxPacketCount;
+}
+
+/********************************************************************/
+uint8_t TeenyUbloxConnect::getLostNAVPVTPacketCount() {
+  return lostNAVPVTPacketCount;
+}
+
+/********************************************************************/
+uint8_t TeenyUbloxConnect::getLostNAVSATPacketCount() {
+  return lostNAVSATPacketCount;
 }
 
 

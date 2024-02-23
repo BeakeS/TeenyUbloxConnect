@@ -224,6 +224,11 @@ class TeenyUbloxConnect {
     void     getNAVSATPacket(ubloxPacket_t &packet_); // Get the full NAV-SAT packet
     void     getNAVSATInfo(ubloxNAVSATInfo_t &info_); // summary and sorted sat details
 
+    // Access lost packet counts
+    uint8_t  getLostRxPacketCount();
+    uint8_t  getLostNAVPVTPacketCount();
+    uint8_t  getLostNAVSATPacketCount();
+
   protected:
     // PROTECTED FOR DEBUG - so we can display contents 
     ubloxPacket_t       commandPacket;
