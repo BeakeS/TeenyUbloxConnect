@@ -13,12 +13,10 @@
     {
       "name": "Michael BeakeS",
       "email": "michaelpbeakes@gmail.com",
-      "url": "",
       "maintainer": true
     }
   ],
   "license": "MIT",
-  "homepage": "",
   "dependencies": {
   },
   "frameworks": "*",
