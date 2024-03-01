@@ -5,36 +5,36 @@ This library only supports serial communication with u-blox GNSS modules.
 This library only processes UBX-NAV-PVT and UBX-NAV-SAT packets and provides raw packet data and derived packet information.
 
     // Ublox setup
-    bool begin(Stream &serialPort_, uint16_t maxWait_ = defaultMaxWait); // default maxWait is 1100ms
+    bool    begin(Stream &serialPort_, uint16_t maxWait_ = defaultMaxWait); // default maxWait is 1100ms
 
     // Host methods for process incoming responses/acknowledges from ublox receiver
     // Can do in timer ISR - depends on serial read hardware queue
     // Recommend calling ever 10-50ms
-    void checkUblox();
+    void    checkUblox();
     
     // Get the latest Position/Velocity/Time solution and fill all global variables
     // Returns true when a packet has been received
-    bool getNAVPVT(); // Use only when autoNAVPVTrate >= 1
-    bool pollNAVPVT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoPVTrate = 0
+    bool    getNAVPVT(); // Use only when autoNAVPVTrate >= 1
+    bool    pollNAVPVT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoPVTrate = 0
     
     // Get the latest satellite information
     //Returns true when a packet has been received
-    bool getNAVSAT(); // Use only when autoNAVSATrate >= 1
-    bool pollNAVSAT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSATrate = 0
+    bool    getNAVSAT(); // Use only when autoNAVSATrate >= 1
+    bool    pollNAVSAT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSATrate = 0
 
     // Ublox command methods
-    void setSerialRate(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
-    bool saveConfiguration(uint16_t maxWait_ = defaultMaxWait);
-    bool getProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
+    void    setSerialRate(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
+    bool    saveConfiguration(uint16_t maxWait_ = defaultMaxWait);
+    bool    getProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
     uint8_t getProtocolVersionHigh(uint16_t maxWait_ = defaultMaxWait);
     uint8_t getProtocolVersionLow(uint16_t maxWait_ = defaultMaxWait);
-    bool setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_ = defaultMaxWait);
-    bool setMeasurementRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // same as setAutoNAVPVTrate = 0(false) or 1(true)
-    bool setAutoNAVPVTrate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // same as setAutoNAVSATrate = 0(false) or 1(true)
-    bool setAutoNAVSATrate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setMeasurementRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // same as setAutoNAVPVTrate = 0(false) or 1(true)
+    bool    setAutoNAVPVTrate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // same as setAutoNAVSATrate = 0(false) or 1(true)
+    bool    setAutoNAVSATrate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
 
     // Ublox navpvt data access
     void     getNAVPVTPacket(uint8_t *packet_); // Get the full NAV-PVT packet
