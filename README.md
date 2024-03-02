@@ -9,8 +9,8 @@ An example of a project that uses this library can be found here: https://github
     bool    begin(Stream &serialPort_, uint16_t maxWait_ = defaultMaxWait); // default maxWait is 1100ms
 
     // Host methods for process incoming responses/acknowledges from ublox receiver
-    // Can do in timer ISR - depends on serial read hardware queue
-    // Recommend calling ever 10-50ms
+    // Can be called inside a timer ISR
+    // Recommend calling ever 10-50ms - depends on queue size, baud rate and packets
     void    checkUblox();
     
     // Get the latest Position/Velocity/Time solution and fill all global variables
