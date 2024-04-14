@@ -8,6 +8,30 @@ An example of a project that uses this library can be found here: https://github
     // Ublox setup
     bool    begin(Stream &serialPort_, uint16_t maxWait_ = defaultMaxWait); // default maxWait is 1100ms
 
+    // Ublox command methods
+    bool    pollUART1Port(uint16_t maxWait_ = defaultMaxWait);
+    bool    setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_ = defaultMaxWait);
+    void    setSerialRate(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
+    void    hardwareReset();
+    void    coldStart();
+    void    warmStart();
+    void    hotStart();
+    bool    saveConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
+    bool    pollProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
+    uint8_t getProtocolVersionHigh(uint16_t maxWait_ = defaultMaxWait);
+    uint8_t getProtocolVersionLow(uint16_t maxWait_ = defaultMaxWait);
+    bool    pollGNSSSelectionInfo(uint16_t maxWait_ = defaultMaxWait);
+    bool    pollGNSSConfigInfo(uint16_t maxWait_ = defaultMaxWait);
+    bool    setGNSSConfig(uint8_t gnssId, bool enable, uint16_t maxWait_ = defaultMaxWait);
+    bool    setMeasurementRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVT
+    bool    setAutoPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVTRate
+    bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVSATRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
+
     // Host methods for process incoming responses/acknowledges from ublox receiver
     // Can be called inside a timer ISR
     // Recommend calling ever 10-50ms - depends on queue size, baud rate and packets
@@ -23,19 +47,9 @@ An example of a project that uses this library can be found here: https://github
     bool    getNAVSAT(); // Use only when autoNAVSATRate > 0
     bool    pollNAVSAT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSATRate = 0
 
-    // Ublox command methods
-    void    setSerialRate(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
-    bool    saveConfiguration(uint16_t maxWait_ = defaultMaxWait);
-    bool    getProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
-    uint8_t getProtocolVersionHigh(uint16_t maxWait_ = defaultMaxWait);
-    uint8_t getProtocolVersionLow(uint16_t maxWait_ = defaultMaxWait);
-    bool    setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setMeasurementRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // same as setAutoNAVPVTRate = 0(false) or 1(true)
-    bool    setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // same as setAutoNAVSATRate = 0(false) or 1(true)
-    bool    setAutoNAVSATRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    // Ublox GNSS info data access
+    ubloxMONGNSSInfo_t getGNSSSelectionInfo();
+    ubloxCFGGNSSInfo_t getGNSSConfigInfo();
 
     // Ublox navpvt data access
     void     getNAVPVTPacket(uint8_t *packet_); // Get the full NAV-PVT packet
@@ -61,10 +75,12 @@ An example of a project that uses this library can be found here: https://github
 
     // Ublox navsat data access
     void     getNAVSATPacket(ubloxPacket_t &packet_); // Get the full NAV-SAT packet
+    uint16_t getNAVSATPacketLength(); // Get the actual NAV-SAT packet length
     void     getNAVSATInfo(ubloxNAVSATInfo_t &info_); // summary and sorted sat details
 
     // Access lost packet counts
     uint8_t  getLostRxPacketCount();
+    uint8_t  getUnknownRxPacketCount();
     uint8_t  getLostNAVPVTPacketCount();
     uint8_t  getLostNAVSATPacketCount();
 
