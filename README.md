@@ -8,6 +8,11 @@ An example of a project that uses this library can be found here: https://github
     // Ublox setup
     bool    begin(Stream &serialPort_, uint16_t maxWait_ = defaultMaxWait); // default maxWait is 1100ms
 
+    // Host methods for process incoming responses/acknowledges from ublox receiver
+    // Can be called inside a timer ISR
+    // Recommend calling ever 10-50ms - depends on queue size, baud rate and packets
+    void    checkUblox();
+
     // Ublox command methods
     bool    pollUART1Port(uint16_t maxWait_ = defaultMaxWait);
     bool    setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_ = defaultMaxWait);
@@ -31,11 +36,6 @@ An example of a project that uses this library can be found here: https://github
     bool    setAutoPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVTRate
     bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSATRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
-
-    // Host methods for process incoming responses/acknowledges from ublox receiver
-    // Can be called inside a timer ISR
-    // Recommend calling ever 10-50ms - depends on queue size, baud rate and packets
-    void    checkUblox();
     
     // Get the latest Position/Velocity/Time solution and fill all global variables
     // Returns true when a packet has been received
