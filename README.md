@@ -67,6 +67,7 @@ An example of a project that uses this library can be found here: https://github
     uint8_t  getSIV();
     int32_t  getLongitude();
     int32_t  getLatitude();
+    int32_t  getAltitude();
     int32_t  getAltitudeMSL();
     uint32_t getHorizontalAccEst();
     uint32_t getVerticalAccEst();
