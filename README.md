@@ -1,8 +1,8 @@
 # TeenyUbloxConnect
 
 The TeenyUbloxConnect library is derived from the SparkFun_u-blox_GNSS_Arduino_Library.
-This library only supports serial communication with u-blox GNSS modules.
-This library only processes UBX-NAV-PVT and UBX-NAV-SAT packets and provides raw packet data and derived packet information.
+This library supports serial communication with u-blox M8 and M10 GNSS modules.
+This library processes UBX-NAV-PVT and UBX-NAV-SAT packets and provides raw packet data and derived packet information.
 An example of a project that uses this library can be found here: https://github.com/BeakeS/TeenyGPSTestbed_C2.git
 
     // Ublox setup
@@ -28,6 +28,7 @@ An example of a project that uses this library can be found here: https://github
     bool    pollGNSSSelectionInfo(uint16_t maxWait_ = defaultMaxWait);
     bool    pollGNSSConfigInfo(uint16_t maxWait_ = defaultMaxWait);
     bool    setGNSSConfig(uint8_t gnssId, bool enable, uint16_t maxWait_ = defaultMaxWait);
+    bool    setGNSSSignalConfig(uint8_t gnssId, const char* signalName, bool enable, uint16_t maxWait_ = defaultMaxWait);
     bool    setMeasurementRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
