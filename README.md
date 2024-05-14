@@ -2,7 +2,7 @@
 
 The TeenyUbloxConnect library is derived from the SparkFun_u-blox_GNSS_Arduino_Library.
 This library supports serial communication with u-blox M8 and M10 GNSS modules.
-This library processes UBX-NAV-PVT and UBX-NAV-SAT packets and provides raw packet data and derived packet information.
+This library processes UBX-NAV-PVT, UBX-NAV-SAT, and UBX-NAV-STATUS packets and provides raw packet data and derived packet information.
 An example of a project that uses this library can be found here: https://github.com/BeakeS/TeenyGPSTestbed_C2.git
 
     // Ublox setup
