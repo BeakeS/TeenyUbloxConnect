@@ -35,6 +35,8 @@ An example of a project that uses this library can be found here: https://github
     bool    setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVT
     bool    setAutoPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVTRate
+    bool    setAutoNAVSTATUS(bool enable_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSATRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     
@@ -42,6 +44,11 @@ An example of a project that uses this library can be found here: https://github
     // Returns true when a packet has been received
     bool    getNAVPVT(); // Use only when autoNAVPVTRate > 0
     bool    pollNAVPVT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoPVTRate = 0
+
+    // Get the latest navigation status
+    // Returns true when a packet has been received
+    bool    getNAVSTATUS(); // Use only when autoNAVSTATUSRate > 0
+    bool    pollNAVSTATUS(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSTATUSRate = 0
     
     // Get the latest satellite information
     //Returns true when a packet has been received
@@ -75,6 +82,10 @@ An example of a project that uses this library can be found here: https://github
     int32_t  getHeading();
     uint16_t getPDOP();
 
+    // Ublox navstatus data access
+    void     getNAVSTATUSPacket(uint8_t *packet_); // Get the full NAV-STATUS packet
+    void     getNAVSTATUSInfo(ubloxNAVSTATUSInfo_t &info_); // summary
+
     // Ublox navsat data access
     void     getNAVSATPacket(ubloxPacket_t &packet_); // Get the full NAV-SAT packet
     uint16_t getNAVSATPacketLength(); // Get the actual NAV-SAT packet length
@@ -84,5 +95,6 @@ An example of a project that uses this library can be found here: https://github
     uint8_t  getLostRxPacketCount();
     uint8_t  getUnknownRxPacketCount();
     uint8_t  getLostNAVPVTPacketCount();
+    uint8_t  getLostNAVSTATUSPacketCount();
     uint8_t  getLostNAVSATPacketCount();
 
