@@ -85,6 +85,7 @@ An example of a project that uses this library can be found here: https://github
     // Ublox navstatus data access
     void     getNAVSTATUSPacket(uint8_t *packet_); // Get the full NAV-STATUS packet
     void     getNAVSTATUSInfo(ubloxNAVSTATUSInfo_t &info_); // summary
+    void     resetNAVSTATUSInfo(); // reset spoofing flags
 
     // Ublox navsat data access
     void     getNAVSATPacket(ubloxPacket_t &packet_); // Get the full NAV-SAT packet
