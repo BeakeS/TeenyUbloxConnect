@@ -79,7 +79,13 @@ An example of a project that uses this library can be found here: https://github
     int32_t  getAltitudeMSL();
     uint32_t getHorizontalAccEst();
     uint32_t getVerticalAccEst();
+    int32_t  getVelN();
+    int32_t  getVelE();
+    int32_t  getVelD();
+    int32_t  getGroundSpeed();
     int32_t  getHeading();
+    uint32_t getSpeedAccEst();
+    uint32_t getHeadingAccEst();
     uint16_t getPDOP();
 
     // Ublox navstatus data access
