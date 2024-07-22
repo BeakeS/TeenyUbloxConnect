@@ -17,10 +17,13 @@ An example of a project that uses this library can be found here: https://github
     bool    pollUART1Port(uint16_t maxWait_ = defaultMaxWait);
     bool    setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_ = defaultMaxWait);
     void    setSerialRate(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
+    void    factoryReset();
     void    hardwareReset();
     void    coldStart();
     void    warmStart();
     void    hotStart();
+    // ** Don't use clearConfiguration or saveConfiguration without first checking M8/M10 manual **
+    bool    clearConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
     bool    saveConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
     bool    pollProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
     uint8_t getProtocolVersionHigh(uint16_t maxWait_ = defaultMaxWait);
