@@ -46,6 +46,9 @@ bool TeenyUbloxConnect::begin(Stream &serialPort_, uint16_t maxWait_) {
       if((protocolVersionHigh == 18) && (protocolVersionLow == 00)) {
         ubloxModuleType = UBLOX_M8_MODULE;
         return true;
+      } else if((protocolVersionHigh == 32) && (protocolVersionLow == 01)) {
+        ubloxModuleType = UBLOX_M9_MODULE;
+        return true;
       } else if((protocolVersionHigh == 34) && (protocolVersionLow == 10)) {
         ubloxModuleType = UBLOX_M10_MODULE;
         return true;
@@ -68,6 +71,8 @@ uint8_t TeenyUbloxConnect::getUbloxModuleType() {
 bool TeenyUbloxConnect::pollUART1Port(uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return pollUART1Port_M8(maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return pollUART1Port_M10(maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return pollUART1Port_M10(maxWait_);
   }
@@ -103,6 +108,8 @@ bool TeenyUbloxConnect::pollUART1Port_M10(uint16_t maxWait_, bool flushPort_) {
 bool TeenyUbloxConnect::setPortOutput(uint8_t portID_, uint8_t comSettings_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setPortOutput_M8(portID_, comSettings_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setPortOutput_M10(portID_, comSettings_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setPortOutput_M10(portID_, comSettings_, maxWait_);
   }
@@ -152,6 +159,8 @@ bool TeenyUbloxConnect::setPortOutput_M10(uint8_t portID_, uint8_t comSettings_,
 void TeenyUbloxConnect::setSerialRate(uint32_t baudrate_, uint8_t uartPort_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     setSerialRate_M8(baudrate_, uartPort_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    setSerialRate_M10(baudrate_, uartPort_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     setSerialRate_M10(baudrate_, uartPort_, maxWait_);
   }
@@ -324,6 +333,8 @@ bool TeenyUbloxConnect::pollGNSSSelectionInfo(uint16_t maxWait_) {
 bool TeenyUbloxConnect::pollGNSSConfigInfo(uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return pollGNSSConfigInfo_M8(maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return pollGNSSConfigInfo_M10(maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return pollGNSSConfigInfo_M10(maxWait_);
   }
@@ -513,6 +524,8 @@ bool TeenyUbloxConnect::pollGNSSConfigInfo_M10(uint16_t maxWait_) {
 bool TeenyUbloxConnect::setGNSSConfig(uint8_t gnssId, bool enable, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setGNSSConfig_M8(gnssId, enable, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setGNSSConfig_M10(gnssId, enable, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setGNSSConfig_M10(gnssId, enable, maxWait_);
   }
@@ -598,6 +611,8 @@ bool TeenyUbloxConnect::setGNSSConfig_M10(uint8_t gnssId, bool enable, uint16_t 
 bool TeenyUbloxConnect::setGNSSSignalConfig(uint8_t gnssId, const char* signalName, bool enable, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setGNSSSignalConfig_M8(gnssId, signalName, enable, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setGNSSSignalConfig_M10(gnssId, signalName, enable, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setGNSSSignalConfig_M10(gnssId, signalName, enable, maxWait_);
   }
@@ -689,6 +704,8 @@ bool TeenyUbloxConnect::setGNSSSignalConfig_M10(uint8_t gnssId, const char* sign
 bool TeenyUbloxConnect::setMeasurementRate(uint16_t rate_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setMeasurementRate_M8(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setMeasurementRate_M10(rate_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setMeasurementRate_M10(rate_, maxWait_);
   }
@@ -730,6 +747,8 @@ bool TeenyUbloxConnect::setMeasurementRate_M10(uint16_t rate_, uint16_t maxWait_
 bool TeenyUbloxConnect::setNavigationRate(uint16_t rate_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setNavigationRate_M8(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setNavigationRate_M10(rate_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setNavigationRate_M10(rate_, maxWait_);
   }
@@ -776,6 +795,8 @@ bool TeenyUbloxConnect::setAutoNAVPVT(bool enable_, uint16_t maxWait_) {
 bool TeenyUbloxConnect::setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setAutoNAVPVTRate_M8(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setAutoNAVPVTRate_M10(rate_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setAutoNAVPVTRate_M10(rate_, maxWait_);
   }
@@ -827,6 +848,8 @@ bool TeenyUbloxConnect::setAutoNAVSTATUS(bool enable_, uint16_t maxWait_) {
 bool TeenyUbloxConnect::setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setAutoNAVSTATUSRate_M8(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setAutoNAVSTATUSRate_M10(rate_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setAutoNAVSTATUSRate_M10(rate_, maxWait_);
   }
@@ -868,6 +891,8 @@ bool TeenyUbloxConnect::setAutoNAVSAT(bool enable_, uint16_t maxWait_) {
 bool TeenyUbloxConnect::setAutoNAVSATRate(uint8_t rate_, uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return setAutoNAVSATRate_M8(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setAutoNAVSATRate_M10(rate_, maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return setAutoNAVSATRate_M10(rate_, maxWait_);
   }

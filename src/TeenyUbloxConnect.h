@@ -68,6 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 enum ubx_module_type_t : uint8_t {
   UBLOX_UNKNOWN_MODULE = 0,
   UBLOX_M8_MODULE      = 8,
+  UBLOX_M9_MODULE      = 9,
   UBLOX_M10_MODULE     = 10
 };
 
