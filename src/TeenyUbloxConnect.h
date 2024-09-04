@@ -112,9 +112,9 @@ const uint16_t   UBX_CFG_NAVX5_PAYLOADLENGTH = 40;   // M8 only
 const uint8_t    UBX_CFG_GNSS   = 0x3E;              // M8 only
 const uint16_t   UBX_CFG_GNSS_MINPAYLOADLENGTH = 4;  // M8 only
 const uint16_t   UBX_CFG_GNSS_MAXPAYLOADLENGTH = 68; // M8 only
-const uint8_t    UBX_CFG_VALSET = 0x8A;              // M10 only
-const uint8_t    UBX_CFG_VALGET = 0x8B;              // M10 only
-const uint8_t    UBX_CFG_VALDEL = 0x8C;              // M10 only
+const uint8_t    UBX_CFG_VALSET = 0x8A;              // M9/M10 only
+const uint8_t    UBX_CFG_VALGET = 0x8B;              // M9/M10 only
+const uint8_t    UBX_CFG_VALDEL = 0x8C;              // M9/M10 only
 const uint8_t  UBX_CLASS_MON = 0x0A;
 const uint8_t    UBX_MON_VER    = 0x04;
 const uint16_t   UBX_MON_VER_PAYLOADLENGTH = 160;
@@ -406,6 +406,7 @@ class TeenyUbloxConnect {
     void    coldStart();
     void    warmStart();
     void    hotStart();
+    // ** Don't use clearConfiguration or saveConfiguration without first checking M8/M9/M10 documentation **
     bool    clearConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
     bool    saveConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
     bool    pollProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
@@ -504,6 +505,7 @@ class TeenyUbloxConnect {
     void setSerialRate_M8(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
     void setSerialRate_M10(uint32_t baudrate_, uint8_t uartPort_ = COM_PORT_UART1, uint16_t maxWait_ = defaultMaxWait);
     bool pollGNSSConfigInfo_M8(uint16_t maxWait_ = defaultMaxWait);
+    bool pollGNSSConfigInfo_M9(uint16_t maxWait_ = defaultMaxWait);
     bool pollGNSSConfigInfo_M10(uint16_t maxWait_ = defaultMaxWait);
     bool setGNSSConfig_M8(uint8_t gnssId, bool enable, uint16_t maxWait_ = defaultMaxWait);
     bool setGNSSConfig_M10(uint8_t gnssId, bool enable, uint16_t maxWait_ = defaultMaxWait);

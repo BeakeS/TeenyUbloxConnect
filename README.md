@@ -1,7 +1,7 @@
 # TeenyUbloxConnect
 
 The TeenyUbloxConnect library is derived from the SparkFun_u-blox_GNSS_Arduino_Library.
-This library supports serial communication with u-blox M8 and M10 GNSS modules.
+This library supports serial communication with u-blox M8, M9, and M10 GNSS modules.
 This library processes UBX-NAV-PVT, UBX-NAV-SAT, and UBX-NAV-STATUS packets and provides raw packet data and derived packet information.
 An example of a project that uses this library can be found here: https://github.com/BeakeS/TeenyGPSTestbed_C2.git
 
@@ -22,7 +22,7 @@ An example of a project that uses this library can be found here: https://github
     void    coldStart();
     void    warmStart();
     void    hotStart();
-    // ** Don't use clearConfiguration or saveConfiguration without first checking M8/M10 manual **
+    // ** Don't use clearConfiguration or saveConfiguration without first checking M8/M9/M10 manual **
     bool    clearConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
     bool    saveConfiguration(uint32_t configMask = 0xFFFF, uint16_t maxWait_ = defaultMaxWait);
     bool    pollProtocolVersion(uint16_t maxWait_ = defaultMaxWait);

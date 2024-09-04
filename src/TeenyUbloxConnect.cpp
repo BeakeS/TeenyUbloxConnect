@@ -334,7 +334,7 @@ bool TeenyUbloxConnect::pollGNSSConfigInfo(uint16_t maxWait_) {
   if(ubloxModuleType == UBLOX_M8_MODULE) {
     return pollGNSSConfigInfo_M8(maxWait_);
   } else if(ubloxModuleType == UBLOX_M9_MODULE) {
-    return pollGNSSConfigInfo_M10(maxWait_);
+    return pollGNSSConfigInfo_M9(maxWait_);
   } else if(ubloxModuleType == UBLOX_M10_MODULE) {
     return pollGNSSConfigInfo_M10(maxWait_);
   }
@@ -371,6 +371,138 @@ bool TeenyUbloxConnect::pollGNSSConfigInfo_M8(uint16_t maxWait_) {
   ubloxCFGGNSSInfo.M8.numTrkChHw = 0;
   ubloxCFGGNSSInfo.M8.numTrkChUse = 0;
   ubloxCFGGNSSInfo.M8.numConfigBlocks = 0;
+  return false;
+}
+/********************************************************************/
+bool TeenyUbloxConnect::pollGNSSConfigInfo_M9(uint16_t maxWait_) {
+  commandPacket.messageClass = UBX_CLASS_CFG;
+  commandPacket.messageID = UBX_CFG_VALGET;
+  commandPacket.payloadLength = 52;
+  commandPacket.payload[0] = 0;
+  commandPacket.payload[1] = VALGET_LAYER_RAM;
+  commandPacket.payload[2] = 0;
+  commandPacket.payload[3] = 0;
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[4 + i]  = UBLOX_CFG_SIGNAL_GPS_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[8 + i]  = UBLOX_CFG_SIGNAL_GPS_L1CA_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[12 + i] = UBLOX_CFG_SIGNAL_SBAS_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[16 + i] = UBLOX_CFG_SIGNAL_SBAS_L1CA_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[20 + i] = UBLOX_CFG_SIGNAL_GAL_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[24 + i] = UBLOX_CFG_SIGNAL_GAL_E1_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[28 + i] = UBLOX_CFG_SIGNAL_BDS_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[32 + i] = UBLOX_CFG_SIGNAL_BDS_B1_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[36 + i] = UBLOX_CFG_SIGNAL_QZSS_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[40 + i] = UBLOX_CFG_SIGNAL_QZSS_L1CA_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[44 + i] = UBLOX_CFG_SIGNAL_GLO_ENA >> (8 * i);
+  for(uint8_t i = 0; i < 4; i++) commandPacket.payload[48 + i] = UBLOX_CFG_SIGNAL_GLO_L1_ENA >> (8 * i);
+  commandPacket.validPacket = true;
+  if(sendCommandPacket(true, true, maxWait_) &&
+     (responsePacket.payloadLength == 64)) {
+    uint32_t gnssKey;
+    bool gnssEnable;
+    uint8_t cfgBlkNum = 0;
+    uint8_t cfgSigNum = 0;
+    for(uint8_t i = 0; i < 13; i++) {
+      gnssKey =  responsePacket.payload[4+(i*5)+0];
+      gnssKey |= responsePacket.payload[4+(i*5)+1] << 8;
+      gnssKey |= responsePacket.payload[4+(i*5)+2] << 16;
+      gnssKey |= responsePacket.payload[4+(i*5)+3] << 24;
+      gnssEnable = responsePacket.payload[4+(i*5)+4];
+      switch(gnssKey) {
+        case UBLOX_CFG_SIGNAL_GPS_ENA:
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssId = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssIdType = 'G';
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].enable = gnssEnable;
+          cfgSigNum = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].numSigs = cfgSigNum;
+          cfgBlkNum++;
+          ubloxCFGGNSSInfo.M10.numConfigBlocks = cfgBlkNum;
+          break;
+        case UBLOX_CFG_SIGNAL_GPS_L1CA_ENA:
+          strncpy(ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].name, "L1CA", 5);
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].enable = gnssEnable;
+          cfgSigNum++;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].numSigs = cfgSigNum;
+          break;
+        case UBLOX_CFG_SIGNAL_SBAS_ENA:
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssId = 1;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssIdType = 'S';
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].enable = gnssEnable;
+          cfgSigNum = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].numSigs = cfgSigNum;
+          cfgBlkNum++;
+          ubloxCFGGNSSInfo.M10.numConfigBlocks = cfgBlkNum;
+          break;
+        case UBLOX_CFG_SIGNAL_SBAS_L1CA_ENA:
+          strncpy(ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].name, "L1CA", 5);
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].enable = gnssEnable;
+          cfgSigNum++;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].numSigs = cfgSigNum;
+          break;
+        case UBLOX_CFG_SIGNAL_GAL_ENA:
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssId = 2;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssIdType = 'E';
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].enable = gnssEnable;
+          cfgSigNum = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].numSigs = cfgSigNum;
+          cfgBlkNum++;
+          ubloxCFGGNSSInfo.M10.numConfigBlocks = cfgBlkNum;
+          break;
+        case UBLOX_CFG_SIGNAL_GAL_E1_ENA:
+          strncpy(ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].name, "E1", 3);
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].enable = gnssEnable;
+          cfgSigNum++;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].numSigs = cfgSigNum;
+          break;
+        case UBLOX_CFG_SIGNAL_BDS_ENA:
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssId = 3;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssIdType = 'B';
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].enable = gnssEnable;
+          cfgSigNum = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].numSigs = cfgSigNum;
+          cfgBlkNum++;
+          ubloxCFGGNSSInfo.M10.numConfigBlocks = cfgBlkNum;
+          break;
+        case UBLOX_CFG_SIGNAL_BDS_B1_ENA:
+          strncpy(ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].name, "B1", 3);
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].enable = gnssEnable;
+          cfgSigNum++;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].numSigs = cfgSigNum;
+          break;
+        case UBLOX_CFG_SIGNAL_QZSS_ENA:
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssId = 5;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssIdType = 'Q';
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].enable = gnssEnable;
+          cfgSigNum = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].numSigs = cfgSigNum;
+          cfgBlkNum++;
+          ubloxCFGGNSSInfo.M10.numConfigBlocks = cfgBlkNum;
+          break;
+        case UBLOX_CFG_SIGNAL_QZSS_L1CA_ENA:
+          strncpy(ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].name, "L1CA", 5);
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].enable = gnssEnable;
+          cfgSigNum++;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].numSigs = cfgSigNum;
+          break;
+        case UBLOX_CFG_SIGNAL_GLO_ENA:
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssId = 6;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].gnssIdType = 'R';
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].enable = gnssEnable;
+          cfgSigNum = 0;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum].numSigs = cfgSigNum;
+          cfgBlkNum++;
+          ubloxCFGGNSSInfo.M10.numConfigBlocks = cfgBlkNum;
+          break;
+        case UBLOX_CFG_SIGNAL_GLO_L1_ENA:
+          strncpy(ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].name, "L1", 3);
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].signalList[cfgSigNum].enable = gnssEnable;
+          cfgSigNum++;
+          ubloxCFGGNSSInfo.M10.configBlockList[cfgBlkNum-1].numSigs = cfgSigNum;
+          break;
+      }
+    }
+    return true;
+  }
+  ubloxCFGGNSSInfo.M10.numConfigBlocks = 24;
   return false;
 }
 /********************************************************************/
