@@ -1,7 +1,7 @@
 {
   "name": "TeenyUbloxConnect",
-  "version": "1.0.29",
-  "description": "Library for serial communication with u-blox M8, M9, and M10 GNSS modules.  Derived from SparkFun_u-blox_GNSS_Arduino_Library.  An example of a project that uses this library can be found here: https://github.com/BeakeS/TeenyGPSTestbed_C2.git",
+  "version": "1.0.30",
+  "description": "Library for serial communication with u-blox M8, M9, and M10 GNSS modules.  Derived from SparkFun_u-blox_GNSS_Arduino_Library.  An example of a project that uses this library can be found here: https://github.com/BeakeS/TeenyGPSTestbed_M5.git",
   "keywords": "Ublox, UBX-NAV-PVT, UBX-NAV-SAT, UBX-NAV-STATUS, Arduino-Library",
   "repository":
   {
