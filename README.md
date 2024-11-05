@@ -90,6 +90,7 @@ An example of a project that uses this library can be found here: https://github
     uint32_t getSpeedAccEst();
     uint32_t getHeadingAccEst();
     uint16_t getPDOP();
+    bool     getInvalidLlh();
 
     // Ublox navstatus data access
     void     getNAVSTATUSPacket(uint8_t *packet_); // Get the full NAV-STATUS packet
