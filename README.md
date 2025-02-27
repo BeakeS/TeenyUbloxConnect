@@ -28,10 +28,11 @@ An example of a project that uses this library can be found here: https://github
     bool    pollProtocolVersion(uint16_t maxWait_ = defaultMaxWait);
     uint8_t getProtocolVersionHigh(uint16_t maxWait_ = defaultMaxWait);
     uint8_t getProtocolVersionLow(uint16_t maxWait_ = defaultMaxWait);
-    bool    pollGNSSSelectionInfo(uint16_t maxWait_ = defaultMaxWait);
-    bool    pollGNSSConfigInfo(uint16_t maxWait_ = defaultMaxWait);
+    bool    pollGNSSSelection(uint16_t maxWait_ = defaultMaxWait);
+    bool    pollGNSSConfig(uint16_t maxWait_ = defaultMaxWait);
     bool    setGNSSConfig(uint8_t gnssId, bool enable, uint16_t maxWait_ = defaultMaxWait);
     bool    setGNSSSignalConfig(uint8_t gnssId, const char* signalName, bool enable, uint16_t maxWait_ = defaultMaxWait);
+    bool    setGNSSConfigState(ubloxCFGGNSSState_t gnssConfigState, uint16_t maxWait_ = defaultMaxWait);
     bool    setMeasurementRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
@@ -59,8 +60,9 @@ An example of a project that uses this library can be found here: https://github
     bool    pollNAVSAT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSATRate = 0
 
     // Ublox GNSS info data access
-    ubloxMONGNSSInfo_t getGNSSSelectionInfo();
-    ubloxCFGGNSSInfo_t getGNSSConfigInfo();
+    ubloxMONGNSSInfo_t  getGNSSSelectionInfo();
+    ubloxCFGGNSSInfo_t  getGNSSConfigInfo();
+    ubloxCFGGNSSState_t getGNSSConfigState();
 
     // Ublox navpvt data access
     void     getNAVPVTPacket(uint8_t *packet_); // Get the full NAV-PVT packet
