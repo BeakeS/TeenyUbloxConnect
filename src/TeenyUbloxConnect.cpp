@@ -1353,16 +1353,6 @@ bool TeenyUbloxConnect::setAutoNAVPVTRate_M10(uint8_t rate_, uint16_t maxWait_) 
 }
 
 /********************************************************************/
-bool TeenyUbloxConnect::setAutoPVT(bool enable_, uint16_t maxWait_) {
-  return setAutoNAVPVTRate(enable_ ? 1 : 0, maxWait_);
-}
-
-/********************************************************************/
-bool TeenyUbloxConnect::setAutoPVTRate(uint8_t rate_, uint16_t maxWait_) {
-  return setAutoNAVPVTRate(rate_, maxWait_);
-}
-
-/********************************************************************/
 bool TeenyUbloxConnect::setAutoNAVSTATUS(bool enable_, uint16_t maxWait_) {
   return setAutoNAVSTATUSRate(enable_ ? 1 : 0, maxWait_);
 }
@@ -1849,12 +1839,6 @@ bool TeenyUbloxConnect::getNAVPVT() {
 }
 
 /********************************************************************/
-// For compatibility with SparkFun_u-blox_GNSS_Arduino_Library
-bool TeenyUbloxConnect::getPVT() {
-  return getNAVPVT();
-}
-
-/********************************************************************/
 bool TeenyUbloxConnect::processNAVPVTPacket() {
   if(ubloxNAVPVTPacketBuffer.validPacket) {
     // Save buffer to packet
@@ -1891,7 +1875,7 @@ void TeenyUbloxConnect::setNAVPVTPacketInfo() {
   ubloxNAVPVTInfo.tAcc |= ubloxNAVPVTPacketBuffer.payload[14] << 16;
   ubloxNAVPVTInfo.tAcc |= ubloxNAVPVTPacketBuffer.payload[15] << 24;
   ubloxNAVPVTInfo.fixType = ubloxNAVPVTPacketBuffer.payload[20];
-  ubloxNAVPVTInfo.locationValid = ubloxNAVPVTPacketBuffer.payload[21] & 0x01;
+  ubloxNAVPVTInfo.gnssFixOk = ubloxNAVPVTPacketBuffer.payload[21] & 0x01;
   ubloxNAVPVTInfo.numSV = ubloxNAVPVTPacketBuffer.payload[23];
   ubloxNAVPVTInfo.longitude = ubloxNAVPVTPacketBuffer.payload[24];
   ubloxNAVPVTInfo.longitude |= ubloxNAVPVTPacketBuffer.payload[25] << 8;
@@ -1988,7 +1972,7 @@ uint8_t TeenyUbloxConnect::getFixType() {
   return ubloxNAVPVTInfo.fixType;
 }
 bool TeenyUbloxConnect::getGnssFixOk() {
-  return ubloxNAVPVTInfo.locationValid;
+  return ubloxNAVPVTInfo.gnssFixOk;
 }
 uint8_t TeenyUbloxConnect::getSIV() {
   return ubloxNAVPVTInfo.numSV;

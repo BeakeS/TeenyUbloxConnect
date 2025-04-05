@@ -37,8 +37,6 @@ An example of a project that uses this library can be found here: https://github
     bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setAutoPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVT
-    bool    setAutoPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVTRate
     bool    setAutoNAVSTATUS(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait);

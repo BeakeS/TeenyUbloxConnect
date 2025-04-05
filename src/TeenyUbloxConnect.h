@@ -328,7 +328,7 @@ typedef struct {
   uint8_t  pad00c;
   uint32_t tAcc;
   uint8_t  fixType;
-  bool     locationValid;
+  bool     gnssFixOk;
   uint8_t  numSV;
   uint8_t  pad01a;
   int32_t  longitude;
@@ -445,8 +445,6 @@ class TeenyUbloxConnect {
     bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setAutoPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVT
-    bool    setAutoPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait); // Same as setAutoNAVPVTRate
     bool    setAutoNAVSTATUS(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
@@ -455,7 +453,6 @@ class TeenyUbloxConnect {
     // Get the latest Position/Velocity/Time solution and fill all global variables
     // Returns true when a packet has been received
     bool    getNAVPVT(); // Use only when autoNAVPVTRate > 0
-    bool    getPVT();    // Same as getNAVPVT() (Kept for SparkFun compatability)
     bool    pollNAVPVT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoPVTRate = 0
 
     // Get the latest navigation status
