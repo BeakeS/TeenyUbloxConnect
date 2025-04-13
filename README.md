@@ -37,25 +37,25 @@ An example of a project that uses this library can be found here: https://github
     bool    setNavigationRate(uint16_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVPVTRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setAutoNAVSTATUS(bool enable_, uint16_t maxWait_ = defaultMaxWait);
-    bool    setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSAT(bool enable_, uint16_t maxWait_ = defaultMaxWait);
     bool    setAutoNAVSATRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVSTATUS(bool enable_, uint16_t maxWait_ = defaultMaxWait);
+    bool    setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_ = defaultMaxWait);
     
     // Get the latest Position/Velocity/Time solution and fill all global variables
     // Returns true when a packet has been received
     bool    getNAVPVT(); // Use only when autoNAVPVTRate > 0
     bool    pollNAVPVT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoPVTRate = 0
-
-    // Get the latest navigation status
-    // Returns true when a packet has been received
-    bool    getNAVSTATUS(); // Use only when autoNAVSTATUSRate > 0
-    bool    pollNAVSTATUS(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSTATUSRate = 0
     
     // Get the latest satellite information
     //Returns true when a packet has been received
     bool    getNAVSAT(); // Use only when autoNAVSATRate > 0
     bool    pollNAVSAT(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSATRate = 0
+
+    // Get the latest navigation status
+    // Returns true when a packet has been received
+    bool    getNAVSTATUS(); // Use only when autoNAVSTATUSRate > 0
+    bool    pollNAVSTATUS(uint16_t maxWait_ = defaultMaxWait); // Use only when autoNAVSTATUSRate = 0
 
     // Ublox GNSS info data access
     ubloxMONGNSSInfo_t  getGNSSSelectionInfo();
@@ -92,20 +92,20 @@ An example of a project that uses this library can be found here: https://github
     uint16_t getPDOP();
     bool     getInvalidLlh();
 
-    // Ublox navstatus data access
-    void     getNAVSTATUSPacket(uint8_t *packet_); // Get the full NAV-STATUS packet
-    void     getNAVSTATUSInfo(ubloxNAVSTATUSInfo_t &info_); // summary
-    void     resetNAVSTATUSInfo(); // reset spoofing flags
-
     // Ublox navsat data access
     void     getNAVSATPacket(ubloxPacket_t &packet_); // Get the full NAV-SAT packet
     uint16_t getNAVSATPacketLength(); // Get the actual NAV-SAT packet length
     void     getNAVSATInfo(ubloxNAVSATInfo_t &info_); // summary and sorted sat details
 
+    // Ublox navstatus data access
+    void     getNAVSTATUSPacket(uint8_t *packet_); // Get the full NAV-STATUS packet
+    void     getNAVSTATUSInfo(ubloxNAVSTATUSInfo_t &info_); // summary
+    void     resetNAVSTATUSInfo(); // reset spoofing flags
+
     // Access lost packet counts
     uint8_t  getLostRxPacketCount();
     uint8_t  getUnknownRxPacketCount();
     uint8_t  getLostNAVPVTPacketCount();
-    uint8_t  getLostNAVSTATUSPacketCount();
     uint8_t  getLostNAVSATPacketCount();
+    uint8_t  getLostNAVSTATUSPacketCount();
 

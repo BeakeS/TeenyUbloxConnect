@@ -1353,49 +1353,6 @@ bool TeenyUbloxConnect::setAutoNAVPVTRate_M10(uint8_t rate_, uint16_t maxWait_) 
 }
 
 /********************************************************************/
-bool TeenyUbloxConnect::setAutoNAVSTATUS(bool enable_, uint16_t maxWait_) {
-  return setAutoNAVSTATUSRate(enable_ ? 1 : 0, maxWait_);
-}
-
-/********************************************************************/
-bool TeenyUbloxConnect::setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_) {
-  if(ubloxModuleType == UBLOX_M8_MODULE) {
-    return setAutoNAVSTATUSRate_M8(rate_, maxWait_);
-  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
-    return setAutoNAVSTATUSRate_M10(rate_, maxWait_);
-  } else if(ubloxModuleType == UBLOX_M10_MODULE) {
-    return setAutoNAVSTATUSRate_M10(rate_, maxWait_);
-  }
-  return false;
-}
-/********************************************************************/
-bool TeenyUbloxConnect::setAutoNAVSTATUSRate_M8(uint8_t rate_, uint16_t maxWait_) {
-  commandPacket.messageClass = UBX_CLASS_CFG;
-  commandPacket.messageID = UBX_CFG_MSG;
-  commandPacket.payloadLength = 3;
-  commandPacket.payload[0] = UBX_CLASS_NAV;
-  commandPacket.payload[1] = UBX_NAV_STATUS;
-  commandPacket.payload[2] = (rate_ <= 127) ? rate_ : 127;
-  commandPacket.validPacket = true;
-  return sendCommandPacket(false, true, maxWait_);
-}
-/********************************************************************/
-bool TeenyUbloxConnect::setAutoNAVSTATUSRate_M10(uint8_t rate_, uint16_t maxWait_) {
-  commandPacket.messageClass = UBX_CLASS_CFG;
-  commandPacket.messageID = UBX_CFG_VALSET;
-  commandPacket.payloadLength = 9;
-  commandPacket.payload[0] = 0;
-  commandPacket.payload[1] = VALSET_LAYER_RAM;
-  commandPacket.payload[2] = 0;
-  commandPacket.payload[3] = 0;
-  for(uint8_t i = 0; i < 4; i++)
-    commandPacket.payload[4 + i] = UBLOX_CFG_MSGOUT_UBX_NAV_STATUS_UART1 >> (8 * i);
-  commandPacket.payload[8] = (rate_ <= 127) ? rate_ : 127;
-  commandPacket.validPacket = true;
-  return sendCommandPacket(false, true, maxWait_);
-}
-
-/********************************************************************/
 bool TeenyUbloxConnect::setAutoNAVSAT(bool enable_, uint16_t maxWait_) {
   return setAutoNAVSATRate(enable_ ? 1 : 0, maxWait_);
 }
@@ -1439,6 +1396,49 @@ bool TeenyUbloxConnect::setAutoNAVSATRate_M10(uint8_t rate_, uint16_t maxWait_) 
 }
 
 /********************************************************************/
+bool TeenyUbloxConnect::setAutoNAVSTATUS(bool enable_, uint16_t maxWait_) {
+  return setAutoNAVSTATUSRate(enable_ ? 1 : 0, maxWait_);
+}
+
+/********************************************************************/
+bool TeenyUbloxConnect::setAutoNAVSTATUSRate(uint8_t rate_, uint16_t maxWait_) {
+  if(ubloxModuleType == UBLOX_M8_MODULE) {
+    return setAutoNAVSTATUSRate_M8(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M9_MODULE) {
+    return setAutoNAVSTATUSRate_M10(rate_, maxWait_);
+  } else if(ubloxModuleType == UBLOX_M10_MODULE) {
+    return setAutoNAVSTATUSRate_M10(rate_, maxWait_);
+  }
+  return false;
+}
+/********************************************************************/
+bool TeenyUbloxConnect::setAutoNAVSTATUSRate_M8(uint8_t rate_, uint16_t maxWait_) {
+  commandPacket.messageClass = UBX_CLASS_CFG;
+  commandPacket.messageID = UBX_CFG_MSG;
+  commandPacket.payloadLength = 3;
+  commandPacket.payload[0] = UBX_CLASS_NAV;
+  commandPacket.payload[1] = UBX_NAV_STATUS;
+  commandPacket.payload[2] = (rate_ <= 127) ? rate_ : 127;
+  commandPacket.validPacket = true;
+  return sendCommandPacket(false, true, maxWait_);
+}
+/********************************************************************/
+bool TeenyUbloxConnect::setAutoNAVSTATUSRate_M10(uint8_t rate_, uint16_t maxWait_) {
+  commandPacket.messageClass = UBX_CLASS_CFG;
+  commandPacket.messageID = UBX_CFG_VALSET;
+  commandPacket.payloadLength = 9;
+  commandPacket.payload[0] = 0;
+  commandPacket.payload[1] = VALSET_LAYER_RAM;
+  commandPacket.payload[2] = 0;
+  commandPacket.payload[3] = 0;
+  for(uint8_t i = 0; i < 4; i++)
+    commandPacket.payload[4 + i] = UBLOX_CFG_MSGOUT_UBX_NAV_STATUS_UART1 >> (8 * i);
+  commandPacket.payload[8] = (rate_ <= 127) ? rate_ : 127;
+  commandPacket.validPacket = true;
+  return sendCommandPacket(false, true, maxWait_);
+}
+
+/********************************************************************/
 bool TeenyUbloxConnect::pollNAVPVT(uint16_t maxWait_) {
   commandPacket.messageClass = UBX_CLASS_NAV;
   commandPacket.messageID = UBX_NAV_PVT;
@@ -1459,26 +1459,6 @@ bool TeenyUbloxConnect::pollNAVPVT(uint16_t maxWait_) {
 }
 
 /********************************************************************/
-bool TeenyUbloxConnect::pollNAVSTATUS(uint16_t maxWait_) {
-  commandPacket.messageClass = UBX_CLASS_NAV;
-  commandPacket.messageID = UBX_NAV_STATUS;
-  commandPacket.payloadLength = 0;
-  commandPacket.validPacket = true;
-  if(sendCommandPacket(true, false, maxWait_)) {
-    if(ubloxNAVSTATUSPacketBuffer.validPacket) {
-      // Lost rx packet
-      lostNAVSTATUSPacketCount += (lostNAVSTATUSPacketCount < 99) ? 1 : 0;
-      processNAVSTATUSPacket(); // processing clears validPacket
-      return false;
-    }
-    ubloxNAVSTATUSPacketBuffer = responsePacket;
-    ubloxNAVSTATUSPacketBuffer.validPacket = true;
-    return processNAVSTATUSPacket();
-  }
-  return false;
-}
-
-/********************************************************************/
 bool TeenyUbloxConnect::pollNAVSAT(uint16_t maxWait_) {
   commandPacket.messageClass = UBX_CLASS_NAV;
   commandPacket.messageID = UBX_NAV_SAT;
@@ -1494,6 +1474,26 @@ bool TeenyUbloxConnect::pollNAVSAT(uint16_t maxWait_) {
     ubloxNAVSATPacketBuffer = responsePacket;
     ubloxNAVSATPacketBuffer.validPacket = true;
     return processNAVSATPacket();
+  }
+  return false;
+}
+
+/********************************************************************/
+bool TeenyUbloxConnect::pollNAVSTATUS(uint16_t maxWait_) {
+  commandPacket.messageClass = UBX_CLASS_NAV;
+  commandPacket.messageID = UBX_NAV_STATUS;
+  commandPacket.payloadLength = 0;
+  commandPacket.validPacket = true;
+  if(sendCommandPacket(true, false, maxWait_)) {
+    if(ubloxNAVSTATUSPacketBuffer.validPacket) {
+      // Lost rx packet
+      lostNAVSTATUSPacketCount += (lostNAVSTATUSPacketCount < 99) ? 1 : 0;
+      processNAVSTATUSPacket(); // processing clears validPacket
+      return false;
+    }
+    ubloxNAVSTATUSPacketBuffer = responsePacket;
+    ubloxNAVSTATUSPacketBuffer.validPacket = true;
+    return processNAVSTATUSPacket();
   }
   return false;
 }
@@ -1721,20 +1721,6 @@ void TeenyUbloxConnect::processIncomingPacket(uint8_t requestedClass_, uint8_t r
       return;
     }
 
-    // NAV-STATUS packet
-    if((receivedPacket.messageClass == UBX_CLASS_NAV) &&
-       (receivedPacket.messageID == UBX_NAV_STATUS) &&
-       (receivedPacket.payloadLength == UBX_NAV_STATUS_PAYLOADLENGTH)) {
-      if(ubloxNAVSTATUSPacketBuffer.validPacket) {
-        // Lost rx packet
-        lostNAVSTATUSPacketCount += (lostNAVSTATUSPacketCount < 99) ? 1 : 0;
-      } else {
-        ubloxNAVSTATUSPacketBuffer = receivedPacket;
-      }
-      receivedPacket.validPacket = false;
-      return;
-    }
-
     // NAV-SAT packet
     if((receivedPacket.messageClass == UBX_CLASS_NAV) &&
        (receivedPacket.messageID == UBX_NAV_SAT) &&
@@ -1745,6 +1731,20 @@ void TeenyUbloxConnect::processIncomingPacket(uint8_t requestedClass_, uint8_t r
         lostNAVSATPacketCount += (lostNAVSATPacketCount < 99) ? 1 : 0;
       } else {
         ubloxNAVSATPacketBuffer = receivedPacket;
+      }
+      receivedPacket.validPacket = false;
+      return;
+    }
+
+    // NAV-STATUS packet
+    if((receivedPacket.messageClass == UBX_CLASS_NAV) &&
+       (receivedPacket.messageID == UBX_NAV_STATUS) &&
+       (receivedPacket.payloadLength == UBX_NAV_STATUS_PAYLOADLENGTH)) {
+      if(ubloxNAVSTATUSPacketBuffer.validPacket) {
+        // Lost rx packet
+        lostNAVSTATUSPacketCount += (lostNAVSTATUSPacketCount < 99) ? 1 : 0;
+      } else {
+        ubloxNAVSTATUSPacketBuffer = receivedPacket;
       }
       receivedPacket.validPacket = false;
       return;
@@ -1780,16 +1780,16 @@ uint8_t TeenyUbloxConnect::getLostNAVPVTPacketCount() {
 }
 
 /********************************************************************/
-uint8_t TeenyUbloxConnect::getLostNAVSTATUSPacketCount() {
-  uint8_t _count = lostNAVSTATUSPacketCount;
-  lostNAVSTATUSPacketCount = 0;
+uint8_t TeenyUbloxConnect::getLostNAVSATPacketCount() {
+  uint8_t _count = lostNAVSATPacketCount;
+  lostNAVSATPacketCount = 0;
   return _count;
 }
 
 /********************************************************************/
-uint8_t TeenyUbloxConnect::getLostNAVSATPacketCount() {
-  uint8_t _count = lostNAVSATPacketCount;
-  lostNAVSATPacketCount = 0;
+uint8_t TeenyUbloxConnect::getLostNAVSTATUSPacketCount() {
+  uint8_t _count = lostNAVSTATUSPacketCount;
+  lostNAVSTATUSPacketCount = 0;
   return _count;
 }
 
@@ -1861,6 +1861,11 @@ bool TeenyUbloxConnect::processNAVPVTPacket() {
 
 /********************************************************************/
 void TeenyUbloxConnect::setNAVPVTPacketInfo() {
+  ubloxNAVPVTInfo.validPacket = true;
+  ubloxNAVPVTInfo.iTOW = ubloxNAVPVTPacketBuffer.payload[0];
+  ubloxNAVPVTInfo.iTOW |= ubloxNAVPVTPacketBuffer.payload[1] << 8;
+  ubloxNAVPVTInfo.iTOW |= ubloxNAVPVTPacketBuffer.payload[2] << 16;
+  ubloxNAVPVTInfo.iTOW |= ubloxNAVPVTPacketBuffer.payload[3] << 24;
   ubloxNAVPVTInfo.year = ubloxNAVPVTPacketBuffer.payload[4];
   ubloxNAVPVTInfo.year |= ubloxNAVPVTPacketBuffer.payload[5] << 8;
   ubloxNAVPVTInfo.month = ubloxNAVPVTPacketBuffer.payload[6];
@@ -1940,6 +1945,14 @@ void TeenyUbloxConnect::getNAVPVTPacket(uint8_t *packet_) {
 }
 
 /********************************************************************/
+void TeenyUbloxConnect::getNAVPVTInfo(ubloxNAVPVTInfo_t &info_) {
+  info_ = ubloxNAVPVTInfo;
+}
+
+/********************************************************************/
+uint32_t TeenyUbloxConnect::getITOW() {
+  return ubloxNAVPVTInfo.iTOW;
+}
 bool TeenyUbloxConnect::getDateValid() {
   return ubloxNAVPVTInfo.dateValid;
 }
@@ -1974,7 +1987,7 @@ uint8_t TeenyUbloxConnect::getFixType() {
 bool TeenyUbloxConnect::getGnssFixOk() {
   return ubloxNAVPVTInfo.gnssFixOk;
 }
-uint8_t TeenyUbloxConnect::getSIV() {
+uint8_t TeenyUbloxConnect::getNumSV() {
   return ubloxNAVPVTInfo.numSV;
 }
 int32_t TeenyUbloxConnect::getLongitude() {
@@ -2021,78 +2034,6 @@ uint16_t TeenyUbloxConnect::getPDOP() {
 }
 bool TeenyUbloxConnect::getInvalidLlh() {
   return ubloxNAVPVTInfo.invalidLlh;
-}
-
-
-/********************************************************************/
-/********************************************************************/
-// Methods for NAVSTATUS packet processing
-/********************************************************************/
-/********************************************************************/
-bool TeenyUbloxConnect::getNAVSTATUS() {
-  processIncomingPacket();
-  return processNAVSTATUSPacket();
-}
-
-/********************************************************************/
-bool TeenyUbloxConnect::processNAVSTATUSPacket() {
-  if(ubloxNAVSTATUSPacketBuffer.validPacket) {
-    // Save buffer to packet
-    ubloxNAVSTATUSPacket[0] = ubloxNAVSTATUSPacketBuffer.synch1;
-    ubloxNAVSTATUSPacket[1] = ubloxNAVSTATUSPacketBuffer.synch2;
-    ubloxNAVSTATUSPacket[2] = ubloxNAVSTATUSPacketBuffer.messageClass;
-    ubloxNAVSTATUSPacket[3] = ubloxNAVSTATUSPacketBuffer.messageID;
-    ubloxNAVSTATUSPacket[4] = ubloxNAVSTATUSPacketBuffer.payloadLength;
-    ubloxNAVSTATUSPacket[5] = ubloxNAVSTATUSPacketBuffer.payloadLength >> 8;
-    memcpy(ubloxNAVSTATUSPacket+6, ubloxNAVSTATUSPacketBuffer.payload, 16);
-    ubloxNAVSTATUSPacket[22] = ubloxNAVSTATUSPacketBuffer.checksumA;
-    ubloxNAVSTATUSPacket[23] = ubloxNAVSTATUSPacketBuffer.checksumB;
-    // Parse packet fields
-    setNAVSTATUSPacketInfo();
-    ubloxNAVSTATUSPacketBuffer.validPacket = false;
-    return true;
-  }
-  return false;
-}
-
-/********************************************************************/
-void TeenyUbloxConnect::setNAVSTATUSPacketInfo() {
-  ubloxNAVSTATUSInfo.validPacket = true;
-  ubloxNAVSTATUSInfo.gpsFix = ubloxNAVSTATUSPacketBuffer.payload[4];
-  ubloxNAVSTATUSInfo.gpsFixOk = ubloxNAVSTATUSPacketBuffer.payload[5] & 0x01;
-  ubloxNAVSTATUSInfo.psmState = ubloxNAVSTATUSPacketBuffer.payload[7] & 0x03;
-  ubloxNAVSTATUSInfo.spoofDetState = (ubloxNAVSTATUSPacketBuffer.payload[7] & 0x18) >> 3;
-  if(ubloxNAVSTATUSInfo.spoofDetState == 2) {
-    ubloxNAVSTATUSInfo.spoofingIndicated = true;
-  }
-  if(ubloxNAVSTATUSInfo.spoofDetState == 3) {
-    ubloxNAVSTATUSInfo.multipleSpoofingIndications = true;
-  }
-  ubloxNAVSTATUSInfo.carrSoln = (ubloxNAVSTATUSPacketBuffer.payload[7] & 0xC0) >> 6;
-  ubloxNAVSTATUSInfo.ttff = ubloxNAVSTATUSPacketBuffer.payload[8];
-  ubloxNAVSTATUSInfo.ttff |= ubloxNAVSTATUSPacketBuffer.payload[9] << 8;
-  ubloxNAVSTATUSInfo.ttff |= ubloxNAVSTATUSPacketBuffer.payload[10] << 16;
-  ubloxNAVSTATUSInfo.ttff |= ubloxNAVSTATUSPacketBuffer.payload[11] << 24;
-  ubloxNAVSTATUSInfo.msss = ubloxNAVSTATUSPacketBuffer.payload[12];
-  ubloxNAVSTATUSInfo.msss |= ubloxNAVSTATUSPacketBuffer.payload[13] << 8;
-  ubloxNAVSTATUSInfo.msss |= ubloxNAVSTATUSPacketBuffer.payload[14] << 16;
-  ubloxNAVSTATUSInfo.msss |= ubloxNAVSTATUSPacketBuffer.payload[15] << 24;
-}
-
-/********************************************************************/
-void TeenyUbloxConnect::getNAVSTATUSPacket(uint8_t *packet_) {
-  memcpy(packet_, ubloxNAVSTATUSPacket, UBX_NAV_STATUS_PACKETLENGTH);
-}
-
-/********************************************************************/
-void TeenyUbloxConnect::getNAVSTATUSInfo(ubloxNAVSTATUSInfo_t &info_) {
-  info_ = ubloxNAVSTATUSInfo;
-}
-
-/********************************************************************/
-void TeenyUbloxConnect::resetNAVSTATUSInfo() {
-  ubloxNAVSTATUSInfo.spoofingIndicated = false;
-  ubloxNAVSTATUSInfo.multipleSpoofingIndications = false;
 }
 
 
@@ -2155,6 +2096,10 @@ bool TeenyUbloxConnect::processNAVSATPacket() {
 /********************************************************************/
 void TeenyUbloxConnect::setNAVSATPacketInfo() {
   ubloxNAVSATInfo.validPacket = true;
+  ubloxNAVSATInfo.iTOW = ubloxNAVSATPacketBuffer.payload[0];
+  ubloxNAVSATInfo.iTOW |= ubloxNAVSATPacketBuffer.payload[1] << 8;
+  ubloxNAVSATInfo.iTOW |= ubloxNAVSATPacketBuffer.payload[2] << 16;
+  ubloxNAVSATInfo.iTOW |= ubloxNAVSATPacketBuffer.payload[3] << 24;
   ubloxNAVSATInfo.numSvsReceived = ubloxNAVSATPacketBuffer.payload[5];
   ubloxNAVSATInfo.numSvs = min(ubloxNAVSATInfo.numSvsReceived, UBX_MAXNAVSATSATELLITES);
   ubloxNAVSATInfo.numSvsHealthy = 0;
@@ -2263,5 +2208,81 @@ uint16_t TeenyUbloxConnect::getNAVSATPacketLength() {
 /********************************************************************/
 void TeenyUbloxConnect::getNAVSATInfo(ubloxNAVSATInfo_t &info_) {
   info_ = ubloxNAVSATInfo;
+}
+
+
+/********************************************************************/
+/********************************************************************/
+// Methods for NAVSTATUS packet processing
+/********************************************************************/
+/********************************************************************/
+bool TeenyUbloxConnect::getNAVSTATUS() {
+  processIncomingPacket();
+  return processNAVSTATUSPacket();
+}
+
+/********************************************************************/
+bool TeenyUbloxConnect::processNAVSTATUSPacket() {
+  if(ubloxNAVSTATUSPacketBuffer.validPacket) {
+    // Save buffer to packet
+    ubloxNAVSTATUSPacket[0] = ubloxNAVSTATUSPacketBuffer.synch1;
+    ubloxNAVSTATUSPacket[1] = ubloxNAVSTATUSPacketBuffer.synch2;
+    ubloxNAVSTATUSPacket[2] = ubloxNAVSTATUSPacketBuffer.messageClass;
+    ubloxNAVSTATUSPacket[3] = ubloxNAVSTATUSPacketBuffer.messageID;
+    ubloxNAVSTATUSPacket[4] = ubloxNAVSTATUSPacketBuffer.payloadLength;
+    ubloxNAVSTATUSPacket[5] = ubloxNAVSTATUSPacketBuffer.payloadLength >> 8;
+    memcpy(ubloxNAVSTATUSPacket+6, ubloxNAVSTATUSPacketBuffer.payload, 16);
+    ubloxNAVSTATUSPacket[22] = ubloxNAVSTATUSPacketBuffer.checksumA;
+    ubloxNAVSTATUSPacket[23] = ubloxNAVSTATUSPacketBuffer.checksumB;
+    // Parse packet fields
+    setNAVSTATUSPacketInfo();
+    ubloxNAVSTATUSPacketBuffer.validPacket = false;
+    return true;
+  }
+  return false;
+}
+
+/********************************************************************/
+void TeenyUbloxConnect::setNAVSTATUSPacketInfo() {
+  ubloxNAVSTATUSInfo.validPacket = true;
+  ubloxNAVSTATUSInfo.iTOW = ubloxNAVSTATUSPacketBuffer.payload[0];
+  ubloxNAVSTATUSInfo.iTOW |= ubloxNAVSTATUSPacketBuffer.payload[1] << 8;
+  ubloxNAVSTATUSInfo.iTOW |= ubloxNAVSTATUSPacketBuffer.payload[2] << 16;
+  ubloxNAVSTATUSInfo.iTOW |= ubloxNAVSTATUSPacketBuffer.payload[3] << 24;
+  ubloxNAVSTATUSInfo.gpsFix = ubloxNAVSTATUSPacketBuffer.payload[4];
+  ubloxNAVSTATUSInfo.gpsFixOk = ubloxNAVSTATUSPacketBuffer.payload[5] & 0x01;
+  ubloxNAVSTATUSInfo.psmState = ubloxNAVSTATUSPacketBuffer.payload[7] & 0x03;
+  ubloxNAVSTATUSInfo.spoofDetState = (ubloxNAVSTATUSPacketBuffer.payload[7] & 0x18) >> 3;
+  if(ubloxNAVSTATUSInfo.spoofDetState == 2) {
+    ubloxNAVSTATUSInfo.spoofingIndicated = true;
+  }
+  if(ubloxNAVSTATUSInfo.spoofDetState == 3) {
+    ubloxNAVSTATUSInfo.multipleSpoofingIndications = true;
+  }
+  ubloxNAVSTATUSInfo.carrSoln = (ubloxNAVSTATUSPacketBuffer.payload[7] & 0xC0) >> 6;
+  ubloxNAVSTATUSInfo.ttff = ubloxNAVSTATUSPacketBuffer.payload[8];
+  ubloxNAVSTATUSInfo.ttff |= ubloxNAVSTATUSPacketBuffer.payload[9] << 8;
+  ubloxNAVSTATUSInfo.ttff |= ubloxNAVSTATUSPacketBuffer.payload[10] << 16;
+  ubloxNAVSTATUSInfo.ttff |= ubloxNAVSTATUSPacketBuffer.payload[11] << 24;
+  ubloxNAVSTATUSInfo.msss = ubloxNAVSTATUSPacketBuffer.payload[12];
+  ubloxNAVSTATUSInfo.msss |= ubloxNAVSTATUSPacketBuffer.payload[13] << 8;
+  ubloxNAVSTATUSInfo.msss |= ubloxNAVSTATUSPacketBuffer.payload[14] << 16;
+  ubloxNAVSTATUSInfo.msss |= ubloxNAVSTATUSPacketBuffer.payload[15] << 24;
+}
+
+/********************************************************************/
+void TeenyUbloxConnect::getNAVSTATUSPacket(uint8_t *packet_) {
+  memcpy(packet_, ubloxNAVSTATUSPacket, UBX_NAV_STATUS_PACKETLENGTH);
+}
+
+/********************************************************************/
+void TeenyUbloxConnect::getNAVSTATUSInfo(ubloxNAVSTATUSInfo_t &info_) {
+  info_ = ubloxNAVSTATUSInfo;
+}
+
+/********************************************************************/
+void TeenyUbloxConnect::resetNAVSTATUSInfo() {
+  ubloxNAVSTATUSInfo.spoofingIndicated = false;
+  ubloxNAVSTATUSInfo.multipleSpoofingIndications = false;
 }
 
