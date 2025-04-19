@@ -64,6 +64,7 @@ An example of a project that uses this library can be found here: https://github
 
     // Ublox navpvt data access
     void     getNAVPVTPacket(uint8_t *packet_); // Get the full NAV-PVT packet
+    void     getNAVPVTInfo(ubloxNAVPVTInfo_t &info_); // summary
     uint16_t getYear();
     uint8_t  getMonth();
     uint8_t  getDay();
